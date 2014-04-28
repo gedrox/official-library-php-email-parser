@@ -1,5 +1,5 @@
 {
-    "name": "Plancake/EmailParser",
+    "name": "floriansemm/official-library-php-email-parser",
     "type": "library",
     "description": "Plancake Email Parser is a simple emailparser for php",
     "keywords": ["email", "parser"],
