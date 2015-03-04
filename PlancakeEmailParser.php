@@ -193,8 +193,11 @@ class PlancakeEmailParser {
     {
         $body = '';
         $detectedContentType = false;
-        $contentTransferEncoding = null;
-        $charset = 'ASCII';
+        $contentTransferEncoding = $this->getHeader('Content-Transfer-Encoding');
+		$charset = 'ASCII';
+		if (preg_match("/;charset=([^;]*)/", $this->getHeader("Content-type"), $charsetMatch)) {
+			$charset = $charsetMatch[1];
+		}
         $waitingForContentStart = true;
 
         if ($returnType == self::HTML)
@@ -212,7 +215,7 @@ class PlancakeEmailParser {
         
         foreach ($this->rawBodyLines as $line) {
             if (!$detectedContentType) {
-                
+				
                 if (preg_match($contentTypeRegex, $line, $matches)) {
                     $detectedContentType = true;
                 }
@@ -227,7 +230,7 @@ class PlancakeEmailParser {
                     $charset = strtoupper(trim($matches[1], '"')); 
                 }                 
                 
-                if ($contentTransferEncoding == null && preg_match('/^Content-Transfer-Encoding: ?(.*)/i', $line, $matches)) {
+                if (preg_match('/^Content-Transfer-Encoding: ?(.*)/i', $line, $matches)) {
                     $contentTransferEncoding = $matches[1];
                 }                
                 
@@ -294,7 +297,7 @@ class PlancakeEmailParser {
     {
         return $this->getBody(self::HTML);
     }
-
+	
     /**
      * N.B.: if the header doesn't exist an empty string is returned
      *
